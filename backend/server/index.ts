@@ -18,7 +18,12 @@ const PORT = process.env.PORT || 4000;
 
 // ── Middleware ────────────────────────────────────────────────
 app.use(cors({
-  origin:      process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: process.env.NODE_ENV === 'production' 
+    ? [
+        'https://erp-by4z.vercel.app',
+        /\.vercel\.app$/,  // Allow all Vercel preview URLs
+      ]
+    : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'],
   credentials: true,
   methods:     ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -50,19 +55,23 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   return serverError(res, err?.message || 'Internal server error');
 });
 
-app.listen(PORT, () => {
-  console.log(`\n🚀  Northstar API server`);
-  console.log(`    http://localhost:${PORT}/api\n`);
-  console.log(`    POST   /api/auth/login`);
-  console.log(`    POST   /api/auth/register`);
-  console.log(`    GET    /api/customers`);
-  console.log(`    GET    /api/inventory`);
-  console.log(`    GET    /api/challans`);
-  console.log(`    GET    /api/dashboard/stats`);
-  console.log(`\n    🧪 Prisma Test Routes:`);
-  console.log(`    GET    /api/test-prisma/health`);
-  console.log(`    GET    /api/test-prisma/customers (auth required)`);
-  console.log(`    GET    /api/test-prisma/stats (auth required)\n`);
-});
+// ── Start server (only in development) ───────────────────────
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`\n🚀  Northstar API server`);
+    console.log(`    http://localhost:${PORT}/api\n`);
+    console.log(`    POST   /api/auth/login`);
+    console.log(`    POST   /api/auth/register`);
+    console.log(`    GET    /api/customers`);
+    console.log(`    GET    /api/inventory`);
+    console.log(`    GET    /api/challans`);
+    console.log(`    GET    /api/dashboard/stats`);
+    console.log(`\n    🧪 Prisma Test Routes:`);
+    console.log(`    GET    /api/test-prisma/health`);
+    console.log(`    GET    /api/test-prisma/customers (auth required)`);
+    console.log(`    GET    /api/test-prisma/stats (auth required)\n`);
+  });
+}
 
+// Export for Vercel serverless
 export default app;
