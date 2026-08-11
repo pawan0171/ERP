@@ -4,8 +4,7 @@ A full-stack wholesale operations management system with role-based access contr
 
 ## 🌐 Live Deployment
 
-**Frontend:** https://erp-by4z.vercel.app/  
-**Backend API:** https://erp-six-silk.vercel.app/
+**Live Application Link:** https://erp-by4z.vercel.app/  
 
 **Status:** ✅ Live and Running
 
