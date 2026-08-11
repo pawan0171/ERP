@@ -2,6 +2,13 @@
 
 A full-stack wholesale operations management system with role-based access control, inventory tracking, customer management, and sales challan generation.
 
+## 🌐 Live Deployment
+
+**Frontend:** https://erp-by4z.vercel.app/  
+**Backend API:** https://erp-six-silk.vercel.app/
+
+**Status:** ✅ Live and Running
+
 ## 🚀 Features
 
 - **Role-Based Authentication** - Admin, Sales, Warehouse, and Accounts roles
@@ -272,7 +279,7 @@ This project is licensed under the MIT License.
 
 ## 👨‍💻 Author
 
-Your Name - [GitHub Profile](https://github.com/yourusername)
+Your Name - [GitHub Profile](https://github.com/pawan0171)
 
 ## 🙏 Acknowledgments
 
