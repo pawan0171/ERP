@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Profile {
+  id              String          @id @db.Uuid
+  full_name       String
+  role            String          @default("admin")
+  created_at      DateTime        @default(now()) @db.Timestamptz(6)
+  challan_items   ChallanItem[]
+  challans        Challan[]
+  customers       Customer[]
+  products        Product[]
+  stock_movements StockMovement[]
+
+  @@map("profiles")
+}
+
+model Customer {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id        String    @db.Uuid
+  name           String
+  mobile         String    @default("")
+  email          String    @default("")
+  business_name  String    @default("")
+  gst_number     String    @default("")
+  customer_type  String    @default("Wholesale")
+  address        String    @default("")
+  status         String    @default("Lead")
+  follow_up_date DateTime? @db.Date
+  notes          String    @default("")
+  created_at     DateTime  @default(now()) @db.Timestamptz(6)
+  challans       Challan[]
+  profile        Profile   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("customers")
+}
+
+model Product {
+  id                 String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id            String          @db.Uuid
+  name               String
+  sku                String
+  category           String          @default("General")
+  unit_price         Decimal         @default(0) @db.Decimal(12, 2)
+  stock_quantity     Int             @default(0)
+  min_stock_quantity Int             @default(5)
+  location           String          @default("Main warehouse")
+  created_at         DateTime        @default(now()) @db.Timestamptz(6)
+  challan_items      ChallanItem[]
+  profile            Profile         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  stock_movements    StockMovement[]
+
+  @@unique([user_id, sku])
+  @@map("products")
+}
+
+model Challan {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id        String        @db.Uuid
+  challan_number String
+  customer_id    String        @db.Uuid
+  status         String        @default("Draft")
+  total_quantity Int           @default(0)
+  created_at     DateTime      @default(now()) @db.Timestamptz(6)
+  challan_items  ChallanItem[]
+  customer       Customer      @relation(fields: [customer_id], references: [id])
+  profile        Profile       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, challan_number])
+  @@map("challans")
+}
+
+model ChallanItem {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id      String   @db.Uuid
+  challan_id   String   @db.Uuid
+  product_id   String   @db.Uuid
+  product_name String
+  sku          String
+  unit_price   Decimal  @default(0) @db.Decimal(12, 2)
+  quantity     Int
+  created_at   DateTime @default(now()) @db.Timestamptz(6)
+  challan      Challan  @relation(fields: [challan_id], references: [id], onDelete: Cascade)
+  product      Product  @relation(fields: [product_id], references: [id])
+  profile      Profile  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("challan_items")
+}
+
+model StockMovement {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id       String   @db.Uuid
+  product_id    String   @db.Uuid
+  quantity      Int
+  movement_type String
+  reason        String   @default("")
+  created_by    String   @db.Uuid
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  product       Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  profile       Profile  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("stock_movements")
+}
