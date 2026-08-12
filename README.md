@@ -128,18 +128,18 @@ npx prisma db push
 cd backend
 npm run dev
 ```
-Backend runs at: http://localhost:4001
+
 
 **Terminal 2 - Frontend:**
 ```bash
 cd frontend
 npm run dev
 ```
-Frontend runs at: http://localhost:5173
+
 
 ### 7. Create Your First User
 
-1. Go to http://localhost:5173
+1. Go to https://erp-by4z.vercel.app/ 
 2. Click **Sign up**
 3. Select a role (Admin, Sales, Warehouse, or Accounts)
 4. Enter email and password
